@@ -1,2 +1,17 @@
-<h1>Pages#home</h1>
-<p>Find me in app/views/pages/home.html.erb</p>
+
+<div class="home container text-center py-5">
+
+    <h1>Test you coding knowledge</h1>
+
+    <p class="lead"> Ton compagnon IA pour réviser le code. Choisis un thème, discute avec lui
+    et génère tes cheat sheets pour ne rien oublier.</p>
+
+  <div class="home-buttons d-flex flex-wrap justify-content-center gap-3 mt-4">
+    <% @categories.each do |category| %>
+        <%= button_to category.name,
+                      chats_path,
+                      params: { chat: { category_id: category.id } },
+                      class: "btn btn-primary btn-lg" %>
+    <% end %>
+  </div>
+</div>
