@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get "users/show"
   devise_for :users
   root to: "pages#home"
 
@@ -8,6 +9,8 @@ Rails.application.routes.draw do
   end
 
   resources :cheat_sheets, only: [:index, :show]
+
+  resources :users, only: [:show]   # gives /users/:id
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
