@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   devise_for :users
   root to: "pages#home"
 
-  resources :chats, only: [:new, :create, :show] do
+  resources :chats, only: [:new, :create, :show, :index] do
     resources :messages, only: [:create]
     resources :cheat_sheets, only: [:create]
   end

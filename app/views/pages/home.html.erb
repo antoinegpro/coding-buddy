@@ -10,7 +10,8 @@
     <% @categories.each do |category| %>
         <%= button_to category.name,
                       chats_path,
-                      params: { chat: { category_id: category.id } },
+                      method: :post,
+                      params: { category_id: category.id },
                       class: "btn btn-primary btn-lg" %>
     <% end %>
   </div>

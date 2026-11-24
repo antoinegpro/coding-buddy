@@ -2,6 +2,10 @@ source "https://rubygems.org"
 
 #gem we installed
 gem "devise"
+gem "kramdown"
+gem "rouge"
+gem "kramdown-parser-gfm"
+gem "ruby_llm", "~> 1.16.0"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.1.4", ">= 8.1.4.1"
