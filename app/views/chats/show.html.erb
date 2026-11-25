@@ -1,23 +1,37 @@
-<%= link_to @chat.category.name, chat_path(@chat) %>
+<div class="container py-4">
 
-<h1 id="chat_title"><%= @chat.title %></h1>
+  <h1><%= @chat.title %></h1>
 
-<div id="messages">
-  <% @chat.messages.each do |message| %>
-    <div class="message">
-      <%= message.role %>
-      <%= sanitize(render_markdown(message.content)) %>
+  <p>Question <%= @position %> / <%= @total %></p>
+
+  <div class="progress mb-4">
+    <div class="progress-bar"
+         style="width: <%= (@position - 1).to_f / @total * 100 %>%">
     </div>
-  <% end %>
-</div>
+  </div>
 
-<div id="new_message_container">
-  <%= simple_form_for [@chat, @message] do |f| %>
-    <%= f.input :content,
-      label: "Ask a question",
-      required: true,
-      placeholder: "How should I get started with the categories?" %>
+  <h2><%= @question.content %></h2>
 
-    <%= f.button :submit, 'Ask LLM', class: 'btn btn-primary' %>
+  <%= form_with url: chat_messages_path(@chat), method: :post do %>
+
+    <%= hidden_field_tag :question_id, @question.id %>
+
+    <% @question.choices.each_with_index do |choice, index| %>
+
+      <div class="border rounded p-3 mb-3">
+
+        <%= radio_button_tag :choice, index, false,
+                             required: true %>
+
+        <%= label_tag "choice_#{index}", choice %>
+
+      </div>
+
+    <% end %>
+
+    <%= submit_tag "Valider ma réponse",
+                   class: "btn btn-primary w-100" %>
+
   <% end %>
+
 </div>

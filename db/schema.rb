@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_24_113505) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_25_112940) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -44,7 +44,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_24_113505) do
     t.bigint "chat_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "kind", default: "conversation", null: false
+    t.jsonb "choices", default: [], null: false
+    t.integer "correct_option"
+    t.boolean "correct"
+    t.text "feedback"
+    t.string "topic"
+    t.bigint "question_id"
+    t.index ["chat_id", "question_id"], name: "index_messages_on_chat_id_and_question_id", unique: true
     t.index ["chat_id"], name: "index_messages_on_chat_id"
+    t.index ["question_id"], name: "index_messages_on_question_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -63,4 +72,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_24_113505) do
   add_foreign_key "chats", "users"
   add_foreign_key "cheat_sheets", "chats"
   add_foreign_key "messages", "chats"
+  add_foreign_key "messages", "messages", column: "question_id", on_delete: :cascade
 end
