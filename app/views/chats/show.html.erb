@@ -10,10 +10,31 @@
     </div>
   </div>
 
+  <% if @last_answer.present? %>
+
+  <% if @last_answer.correct %>
+
+    <div class="alert alert-success">
+      <strong>Bonne réponse !</strong>
+      <p><%= @last_answer.feedback %></p>
+    </div>
+
+  <% else %>
+
+    <div class="alert alert-danger">
+      <strong>Mauvaise réponse !</strong>
+      <p><%= @last_answer.feedback %></p>
+    </div>
+
+  <% end %>
+
+<% end %>
+
   <h2><%= @question.content %></h2>
 
-  <%= form_with url: chat_messages_path(@chat), method: :post do %>
-
+<%= form_with url: chat_messages_path(@chat),
+              method: :post,
+              data: { turbo: false } do %>
     <%= hidden_field_tag :question_id, @question.id %>
 
     <% @question.choices.each_with_index do |choice, index| %>

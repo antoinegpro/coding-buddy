@@ -34,4 +34,34 @@ class Chat < ApplicationRecord
   def completed?
     quiz_questions.exists? && current_question.nil?
   end
+
+  def conversation_messages
+    messages.where(kind: "conversation").order(:id)
+  end
+
+  def quiz_mistakes
+    incorrect_answers.includes(:question).map do |answer|
+      {
+      topic: answer.question.topic,
+      question: answer.question.content,
+      user_answer: answer.content,
+      correct_answer: answer.question.choices[answer.question.correct_option],
+      feedback: answer.question.feedback
+     }
+    end
+  end
+
+  MAX_EXCHANGES = 3
+
+  def exchanges_count
+    conversation_messages.where(role: "user").count
+  end
+
+  def remaining_exchanges
+    [MAX_EXCHANGES - exchanges_count, 0].max
+  end
+
+  def discussion_limit_reached?
+    remaining_exchanges.zero?
+  end
 end

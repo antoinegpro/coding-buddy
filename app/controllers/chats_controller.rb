@@ -39,18 +39,69 @@ class ChatsController < ApplicationController
     def show
     @chat = current_user.chats.find(params[:id])
 
-    @question = @chat.current_question
+    @total = @chat.quiz_questions.count
+    @answered = @chat.quiz_answers.count
 
-    if @question.nil?
-        redirect_to root_path
-        return
+    if @total.zero?
+        return redirect_to root_path
     end
 
-    @position = @chat.quiz_answers.count + 1
-    @total = @chat.quiz_questions.count
+    if @chat.completed?
+        return redirect_to companion_chat_path(@chat)
+    end
+
+    if @answered >= @total
+        return redirect_to root_path, alert: "Quiz incohérent."
+    end
+
+    @question = @chat.current_question
+    @last_answer = @chat.quiz_answers.last
+    @position = @answered + 1
+    end
+
+    def companion
+        @chat = current_user.chats.find(params[:id])
+
+        unless @chat.completed?
+            return redirect_to chat_path(@chat)
+        end
+
+        @mistakes = @chat.quiz_mistakes
+        @messages = @chat.conversation_messages
+        @message = Message.new
+
+        @score = @chat.score
+        @total = @chat.quiz_questions.count
     end
 
     QUESTIONS_COUNT = 5
+
+    def recap
+        @chat = current_user ? current_user.chats.find(params[:id]) : guest_chat
+
+        unless @chat.completed?
+            return redirect_to chat_path(@chat)
+        end
+
+        @score = @chat.score
+        @total = @chat.quiz_questions.count
+
+        @correct_answers = @chat.correct_answers
+        @incorrect_answers = @chat.incorrect_answers
+
+        @strengths = @correct_answers.includes(:question).map do |answer|
+            answer.question.topic
+        end.uniq
+
+        @weaknesses = @incorrect_answers.includes(:question).map do |answer|
+            answer.question.topic
+        end.uniq
+
+        @strengths = @strengths - @weaknesses
+
+        @mistakes = @chat.quiz_mistakes
+        @messages = @chat.conversation_messages
+    end
 
     def generate_questions(category)
     prompt = <<~PROMPT
