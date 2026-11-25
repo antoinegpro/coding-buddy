@@ -1,2 +1,24 @@
-<h1>Users#show</h1>
-<h1><%= @user.email %></h1>
+<div class="container text-center py-5">
+  <h1 class="display-4">Profile</h1>
+  <p class="lead mb-5">
+    Tes cheat sheets : <strong><%= @user.cheat_sheets.count %></strong>
+  </p>
+
+  <% if @user.cheat_sheets.empty? %>
+    <p class="text-muted mb-5">Tu n'as pas encore de cheat sheet.</p>
+  <% else %>
+    <div class="row justify-content-center g-3 mb-5">
+      <% @user.cheat_sheets.each do |sheet| %>
+        <div class="col-6 col-md-3">
+          <%= link_to cheat_sheet_path(sheet), class: "card h-100 text-decoration-none text-dark shadow-sm" do %>
+            <div class="card-body d-flex align-items-center justify-content-center">
+              <%= sheet.chat.title.presence || "Cheat sheet ##{sheet.id}" %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= link_to "Retour", root_path, class: "btn btn-primary btn-lg" %>
+</div>
