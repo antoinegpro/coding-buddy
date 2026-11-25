@@ -1,0 +1,38 @@
+<div class="container py-5">
+  <div class="text-center mb-4">
+    <h1 class="h2">Your recap</h1>
+    <p class="lead mb-0">
+      You scored <strong><%= @score %></strong> out of <strong><%= @total %></strong>.
+    </p>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5 card-title mb-3">Questions and answers</h2>
+      <ul class="list-group list-group-flush">
+        <% @chat.answers.includes(:question).each do |answer| %>
+          <li class="list-group-item px-0">
+            <div class="d-flex justify-content-between align-items-start gap-3">
+              <div>
+                <p class="fw-semibold mb-1"><%= answer.question.content %></p>
+                <p class="text-muted small mb-0">Your answer: <%= answer.content %></p>
+              </div>
+              <span class="badge <%= answer.correct? ? 'bg-success' : 'bg-danger' %> flex-shrink-0">
+                <%= answer.correct? ? "Correct" : "Incorrect" %>
+              </span>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+
+  <div class="text-center">
+    <%= link_to "Download my cheat sheet",
+                download_cheat_sheet_path(@cheat_sheet),
+                class: "btn btn-primary btn-lg" %>
+    <% unless user_signed_in? %>
+      <p class="small text-muted mt-2 mb-0">You'll be asked to sign up or log in first.</p>
+    <% end %>
+  </div>
+</div>
