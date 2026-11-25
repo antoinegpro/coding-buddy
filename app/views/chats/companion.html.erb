@@ -1,0 +1,115 @@
+<div class="container py-4">
+
+  <h1>Ton compagnon IA</h1>
+
+  <p>Catégorie : <%= @chat.category.name %></p>
+
+  <div class="card p-3 mb-4">
+    <h2>Quiz terminé !</h2>
+    <p>Ton score : <%= @score %> / <%= @total %></p>
+  </div>
+
+  <div class="card p-3 mb-4">
+
+    <% if @mistakes.any? %>
+
+      <h3>Les notions à revoir</h3>
+
+      <% @mistakes.each do |mistake| %>
+        <div class="mb-3">
+
+          <strong><%= mistake[:topic] %></strong>
+
+          <p><%= mistake[:question] %></p>
+
+          <p class="text-danger">
+            Ta réponse : <%= mistake[:user_answer] %>
+          </p>
+
+          <p class="text-success">
+            Bonne réponse : <%= mistake[:correct_answer] %>
+          </p>
+
+        </div>
+      <% end %>
+
+    <% else %>
+
+      <p>Bravo ! Tu as répondu correctement à toutes les questions.</p>
+
+    <% end %>
+
+  </div>
+
+  <div id="messages" class="mb-4">
+
+    <div class="bg-light rounded p-3 mb-3">
+      <strong>Coding Buddy</strong>
+
+      <p>
+        <% if @mistakes.any? %>
+          Nous allons revoir ensemble les notions que tu n'as
+          pas encore maîtrisées. Par laquelle veux-tu commencer ?
+        <% else %>
+          Excellent résultat ! Souhaites-tu approfondir une notion ?
+        <% end %>
+      </p>
+    </div>
+
+    <% @messages.each do |message| %>
+
+      <div class="rounded p-3 mb-3 <%= message.role == "user" ? "bg-primary text-white" : "bg-light" %>">
+
+        <strong>
+          <%= message.role == "user" ? "Toi" : "Coding Buddy" %>
+        </strong>
+
+        <% if message.role == "assistant" %>
+        <div class="markdown-content">
+            <%= sanitize render_markdown(message.content) %>
+        </div>
+        <% else %>
+        <p><%= message.content %></p>
+        <% end %>
+      </div>
+
+    <% end %>
+
+  </div>
+
+        <p>
+        Échanges restants :
+        <%= @chat.remaining_exchanges %>
+        </p>
+
+        <% unless @chat.discussion_limit_reached? %>
+
+
+  <%= form_with model: @message,
+                url: discuss_chat_messages_path(@chat),
+                method: :post,
+                data: { turbo: false } do |f| %>
+
+    <%= f.text_area :content,
+                    class: "form-control mb-3",
+                    placeholder: "Pose ta question...",
+                    required: true,
+                    rows: 3 %>
+
+    <%= f.submit "Envoyer",
+                 class: "btn btn-primary w-100" %>
+
+  <% end %>
+
+    <% else %>
+
+    <div class="alert alert-info">
+        Tu as terminé ta session de discussion.
+    </div>
+
+<% end %>
+
+<%= link_to "Passer au récapitulatif",
+            recap_chat_path(@chat),
+            class: "btn btn-success w-100 mt-3" %>
+</div>

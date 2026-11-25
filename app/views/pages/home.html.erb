@@ -12,6 +12,7 @@
                       chats_path,
                       method: :post,
                       params: { category_id: category.id },
+                      data: { turbo_submit_with: "Génération du quiz..." },
                       class: "btn btn-primary btn-lg" %>
     <% end %>
   </div>
