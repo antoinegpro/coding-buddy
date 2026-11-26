@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="40 30 432 385" role="img" aria-label="Coding Buddy Roboter">
+  <line x1="256" y1="70" x2="256" y2="135" stroke="#316CF4" stroke-width="20" stroke-linecap="round"/>
+  <circle cx="256" cy="58" r="24" fill="#316CF4"/>
+  <rect x="52" y="225" width="44" height="90" rx="22" fill="#316CF4"/>
+  <rect x="416" y="225" width="44" height="90" rx="22" fill="#316CF4"/>
+  <rect x="96" y="130" width="320" height="270" rx="70" fill="#316CF4"/>
+  <rect x="136" y="180" width="240" height="170" rx="50" fill="#FFFFFF"/>
+  <circle cx="206" cy="245" r="22" fill="#316CF4"/>
+  <circle cx="306" cy="245" r="22" fill="#316CF4"/>
+  <path d="M216 305 Q256 337 296 305" fill="none" stroke="#316CF4" stroke-width="18" stroke-linecap="round"/>
+</svg>
