@@ -1,58 +1,52 @@
-<div class="container py-4">
+<div class="quiz container py-4">
 
-  <h1><%= @chat.title %></h1>
+  <%= link_to "← Tous les thèmes", root_path, class: "quiz-back" %>
 
-  <p>Question <%= @position %> / <%= @total %></p>
-
-  <div class="progress mb-4">
-    <div class="progress-bar"
-         style="width: <%= (@position - 1).to_f / @total * 100 %>%">
-    </div>
+  <div class="d-flex flex-wrap justify-content-between align-items-baseline gap-2">
+    <h1 class="quiz-title mb-0"><%= @chat.title %></h1>
+    <span class="quiz-position">Question <%= @position %> sur <%= @total %></span>
   </div>
 
-  <% if @last_answer.present? %>
+  <div class="quiz-progress mt-3 mb-4" aria-hidden="true">
+    <% (1..@total).each do |step| %>
+      <span class="quiz-progress-step <%= "is-done" if step < @position %> <%= "is-current" if step == @position %>"></span>
+    <% end %>
+  </div>
 
-  <% if @last_answer.correct %>
-
-    <div class="alert alert-success">
-      <strong>Bonne réponse !</strong>
-      <p><%= @last_answer.feedback %></p>
-    </div>
-
-  <% else %>
-
-    <div class="alert alert-danger">
-      <strong>Mauvaise réponse !</strong>
-      <p><%= @last_answer.feedback %></p>
-    </div>
-
-  <% end %>
-
-<% end %>
-
-  <h2><%= @question.content %></h2>
-
-<%= form_with url: chat_messages_path(@chat),
-              method: :post,
-              data: { turbo: false } do %>
+  <%= form_with url: chat_messages_path(@chat),
+                method: :post,
+                data: { turbo: false },
+                class: "quiz-card" do %>
     <%= hidden_field_tag :question_id, @question.id %>
 
-    <% @question.choices.each_with_index do |choice, index| %>
+    <fieldset>
+      <legend class="quiz-question mb-4"><%= @question.content %></legend>
 
-      <div class="border rounded p-3 mb-3">
-
-        <%= radio_button_tag :choice, index, false,
-                             required: true %>
-
-        <%= label_tag "choice_#{index}", choice %>
-
-      </div>
-
-    <% end %>
+      <% @question.choices.each_with_index do |choice, index| %>
+        <%= label_tag "choice_#{index}", class: "quiz-choice" do %>
+          <%= radio_button_tag :choice, index, false,
+                               required: true,
+                               class: "quiz-choice-input" %>
+          <span class="quiz-choice-letter" aria-hidden="true"><%= ("A".ord + index).chr %></span>
+          <span><%= choice %></span>
+        <% end %>
+      <% end %>
+    </fieldset>
 
     <%= submit_tag "Valider ma réponse",
-                   class: "btn btn-primary w-100" %>
-
+                   class: "btn btn-primary quiz-submit w-100 mt-2" %>
   <% end %>
 
+  <%# @last_answer concerne la question précédente %>
+  <% if @last_answer.present? %>
+    <% correct = @last_answer.correct %>
+    <div class="quiz-toast alert <%= correct ? "alert-success" : "alert-danger" %> alert-dismissible fade show" role="alert">
+      <strong class="d-flex align-items-center gap-2 mb-2">
+        <i class="fa-solid <%= correct ? "fa-check" : "fa-xmark" %>" aria-hidden="true"></i>
+        Question <%= @position - 1 %> · <%= correct ? "Bonne réponse !" : "Mauvaise réponse" %>
+      </strong>
+      <p class="mb-0"><%= @last_answer.feedback %></p>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer le message"></button>
+    </div>
+  <% end %>
 </div>
