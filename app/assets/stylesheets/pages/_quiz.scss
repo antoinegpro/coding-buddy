@@ -1,0 +1,154 @@
+$quiz-blue: #0b57d0;
+$quiz-blue-dark: #08419e;
+$quiz-blue-medium: #9dbbf0;
+$quiz-blue-light: #e8f0ff;
+$quiz-text: #14161c;
+$quiz-muted: #555b66;
+$quiz-border: #e2e5ea;
+
+.quiz {
+  max-width: 808px;
+  color: $quiz-text;
+
+  // Laisse de la place pour faire défiler au-dessus du message
+  &:has(.quiz-toast) {
+    padding-bottom: 12rem !important;
+  }
+}
+
+.quiz-back {
+  display: inline-block;
+  padding: 0.6rem 0;
+  font-weight: 600;
+  color: $quiz-blue;
+  text-decoration: none;
+
+  &:hover {
+    color: $quiz-blue-dark;
+  }
+}
+
+.quiz-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.quiz-position {
+  font-weight: 600;
+  color: $quiz-muted;
+}
+
+.quiz-progress {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.quiz-progress-step {
+  flex: 1;
+  height: 0.5rem;
+  border-radius: 0.25rem;
+  background: #dde1e8;
+
+  &.is-done {
+    background: $quiz-blue;
+  }
+
+  &.is-current {
+    background: $quiz-blue-medium;
+  }
+}
+
+.quiz-card {
+  padding: 2rem;
+  background: #fff;
+  border: 1px solid $quiz-border;
+  border-radius: 1rem;
+
+  @media (max-width: 575.98px) {
+    padding: 1.25rem;
+  }
+}
+
+.quiz-question {
+  font-family: $headers-font;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.quiz-choice {
+  position: relative;
+  display: flex;
+  clear: both;
+  align-items: center;
+  gap: 1rem;
+  min-height: 3.75rem;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 2px solid $quiz-border;
+  border-radius: 0.75rem;
+  cursor: pointer;
+
+  &:hover {
+    border-color: $quiz-blue-medium;
+  }
+
+  &:has(:checked) {
+    border-color: $quiz-blue;
+    background: $quiz-blue-light;
+
+    .quiz-choice-letter {
+      background: $quiz-blue;
+      color: #fff;
+    }
+  }
+
+  &:has(:focus-visible) {
+    outline: 3px solid $quiz-blue;
+    outline-offset: 2px;
+  }
+}
+
+// Bouton radio masqué visuellement mais toujours utilisable au clavier
+.quiz-choice-input {
+  position: absolute;
+  left: 2rem;
+  opacity: 0;
+}
+
+.quiz-choice-letter {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: #eef0f4;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.quiz-submit {
+  --bs-btn-bg: #{$quiz-blue};
+  --bs-btn-border-color: #{$quiz-blue};
+  --bs-btn-hover-bg: #{$quiz-blue-dark};
+  --bs-btn-hover-border-color: #{$quiz-blue-dark};
+  --bs-btn-active-bg: #{$quiz-blue-dark};
+  --bs-btn-active-border-color: #{$quiz-blue-dark};
+  padding: 0.8rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+}
+
+.quiz-toast.alert {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 1000;
+  width: 310px;
+  max-width: calc(100% - 3rem);
+  margin: 0;
+  border-radius: 1rem;
+  box-shadow: 0 12px 32px rgba($quiz-text, 0.14);
+}
