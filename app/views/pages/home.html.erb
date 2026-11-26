@@ -1,19 +1,55 @@
+<div class="home container py-5">
 
-<div class="home container text-center py-5">
+  <header class="text-center mb-5">
+    <h1 class="home-title mb-3">Teste tes connaissances en <span>code</span></h1>
+    <p class="home-subtitle mx-auto mb-0">
+      Ton compagnon IA pour réviser. Choisis un thème, discute avec lui
+      et génère tes cheat sheets pour ne rien oublier.
+    </p>
+  </header>
 
-    <h1>Test you coding knowledge</h1>
-
-    <p class="lead"> Ton compagnon IA pour réviser le code. Choisis un thème, discute avec lui
-    et génère tes cheat sheets pour ne rien oublier.</p>
-
-  <div class="home-buttons d-flex flex-wrap justify-content-center gap-3 mt-4">
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3 justify-content-center">
     <% @categories.each do |category| %>
-        <%= button_to category.name,
-                      chats_path,
+      <% theme = category_theme(category) %>
+      <div class="col">
+        <%= button_to chats_path,
                       method: :post,
                       params: { category_id: category.id },
-                      data: { turbo_submit_with: "Génération du quiz..." },
-                      class: "btn btn-primary btn-lg" %>
+                      form_class: "h-100",
+                      data: { turbo_submits_with: "Génération du quiz..." },
+                      class: "card theme-card w-100 h-100 p-4 text-start" do %>
+          <span class="theme-card-icon mb-3">
+            <i class="fa-solid <%= theme[:icon] %>" aria-hidden="true"></i>
+          </span>
+          <span class="theme-card-title mb-2"><%= theme[:label] %></span>
+          <span class="theme-card-description mb-3"><%= theme[:description] %></span>
+          <span class="theme-card-cta mt-auto">Lancer le quiz →</span>
+        <% end %>
+      </div>
     <% end %>
   </div>
+
+  <ol class="home-steps row row-cols-1 row-cols-md-3 g-4 list-unstyled mt-5 pt-2 mb-0">
+    <li class="col d-flex gap-3">
+      <span class="home-step-number">1</span>
+      <div>
+        <strong class="d-block">Choisis un thème</strong>
+        <span class="home-step-text">Un quiz est généré pour t'entraîner.</span>
+      </div>
+    </li>
+    <li class="col d-flex gap-3">
+      <span class="home-step-number">2</span>
+      <div>
+        <strong class="d-block">Discute avec l'IA</strong>
+        <span class="home-step-text">Pose tes questions sur ce que tu n'as pas compris.</span>
+      </div>
+    </li>
+    <li class="col d-flex gap-3">
+      <span class="home-step-number">3</span>
+      <div>
+        <strong class="d-block">Garde une cheat sheet</strong>
+        <span class="home-step-text">Génère ta fiche pour ne rien oublier.</span>
+      </div>
+    </li>
+  </ol>
 </div>
