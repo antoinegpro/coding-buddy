@@ -1,0 +1,54 @@
+<div class="container py-5">
+
+  <div class="text-center mb-4">
+
+    <h1><%= @cheat_sheet.title %></h1>
+
+    <p class="text-muted">
+      Category: <%= @cheat_sheet.chat.category.name %>
+    </p>
+
+    <p>
+      Quiz score:
+      <strong>
+        <%= @cheat_sheet.chat.score %> /
+        <%= @cheat_sheet.chat.quiz_questions.count %>
+      </strong>
+    </p>
+
+    <p class="text-muted small">
+      Created on:
+      <%= @cheat_sheet.created_at.strftime("%d/%m/%Y") %>
+    </p>
+
+  </div>
+
+  <div class="card shadow-sm mb-4">
+
+    <div class="card-body p-4">
+
+      <div class="markdown-content">
+        <%= sanitize(render_markdown(@cheat_sheet.content)) %>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="d-flex flex-column gap-3">
+
+    <%= link_to "Download my cheat sheet",
+                download_cheat_sheet_path(@cheat_sheet),
+                class: "btn btn-primary" %>
+
+    <%= link_to "Accéder à mon profil",
+                user_path(current_user),
+                class: "btn btn-outline-secondary" %>
+
+    <%= link_to "Start a new quiz",
+                root_path,
+                class: "btn btn-outline-primary" %>
+
+  </div>
+
+</div>
