@@ -121,9 +121,21 @@
   <!-- Actions -->
   <div class="text-center">
 
-    <button class="btn btn-primary btn-lg" disabled>
-      Download my cheat sheet
-    </button>
+  <% if @chat.cheat_sheets.exists? %>
+
+    <%= link_to "Voir ma fiche de révision",
+                cheat_sheet_path(@chat.cheat_sheets.first),
+                class: "btn btn-primary btn-lg" %>
+
+  <% else %>
+
+    <%= button_to "Générer ma fiche de révision",
+                  chat_cheat_sheets_path(@chat),
+                  method: :post,
+                  class: "btn btn-primary btn-lg",
+                  data: { turbo_submits_with: "Generating..." } %>
+
+  <% end %>
 
     <%= link_to "Start a new quiz",
                 root_path,

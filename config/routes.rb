@@ -22,7 +22,11 @@ Rails.application.routes.draw do
 
   end
 
-  resources :cheat_sheets, only: [:index, :show]
+  resources :cheat_sheets, only: [:index, :show] do
+    member do
+      get :download
+    end
+  end
   resources :users, only: [:show]
 
 
