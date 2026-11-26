@@ -40,7 +40,10 @@
   <%# @last_answer concerne la question précédente %>
   <% if @last_answer.present? %>
     <% correct = @last_answer.correct %>
-    <div class="quiz-toast alert <%= correct ? "alert-success" : "alert-danger" %> alert-dismissible fade show" role="alert">
+    <div class="quiz-toast alert <%= correct ? "alert-success" : "alert-danger" %> alert-dismissible fade show"
+     role="alert"
+     data-controller="toast"
+     data-toast-delay-value="5000">
       <strong class="d-flex align-items-center gap-2 mb-2">
         <i class="fa-solid <%= correct ? "fa-check" : "fa-xmark" %>" aria-hidden="true"></i>
         Question <%= @position - 1 %> · <%= correct ? "Bonne réponse !" : "Mauvaise réponse" %>
