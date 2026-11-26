@@ -1,1 +1,102 @@
-// Specific CSS for your home-page
+$home-blue: #0b57d0;
+$home-blue-light: #e8f0ff;
+$home-text: #14161c;
+$home-muted: #555b66;
+$home-border: #e2e5ea;
+
+.home {
+  max-width: 1120px;
+  color: $home-text;
+}
+
+.home-title {
+  font-size: clamp(2.125rem, 5vw, 3.5rem);
+  font-weight: 700;
+
+  span {
+    color: $home-blue;
+  }
+}
+
+.home-subtitle {
+  max-width: 600px;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: $home-muted;
+}
+
+// Chaque carte est le bouton généré par button_to
+.theme-card {
+  border: 1px solid $home-border;
+  border-radius: 1rem;
+  color: $home-text;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-4px);
+    border-color: $home-blue;
+    box-shadow: 0 12px 28px rgba($home-blue, 0.14);
+  }
+
+  // Pendant la génération du quiz
+  &:disabled {
+    cursor: wait;
+    opacity: 0.7;
+    transform: none;
+  }
+}
+
+.theme-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  background: $home-blue-light;
+  color: $home-blue;
+  font-size: 1.35rem;
+}
+
+.theme-card-title {
+  font-family: $headers-font;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.theme-card-description {
+  font-size: 0.95rem;
+  color: $home-muted;
+}
+
+.theme-card-cta {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: $home-blue;
+}
+
+.home-steps {
+  border-top: 1px solid #d5d9e0;
+}
+
+.home-step-number {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: $home-text;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.home-step-text {
+  font-size: 0.95rem;
+  color: $home-muted;
+}
