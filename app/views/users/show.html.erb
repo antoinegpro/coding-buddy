@@ -1,24 +1,169 @@
-<div class="container text-center py-5">
-  <h1 class="display-4">Profile</h1>
-  <p class="lead mb-5">
-    Tes cheat sheets : <strong><%= @user.cheat_sheets.count %></strong>
-  </p>
+<% sheets = @user.cheat_sheets.includes(:chat).order(created_at: :desc) %>
+<% chats = @user.respond_to?(:chats) ? @user.chats : Chat.none %>
+<% finished = chats.where.not(score: nil) %>
+<% average = finished.average(:score) %>
+<% name = @user.try(:first_name).presence || @user.email.split("@").first.capitalize %>
 
-  <% if @user.cheat_sheets.empty? %>
-    <p class="text-muted mb-5">Tu n'as pas encore de cheat sheet.</p>
-  <% else %>
-    <div class="row justify-content-center g-3 mb-5">
-      <% @user.cheat_sheets.each do |sheet| %>
-        <div class="col-6 col-md-3">
-          <%= link_to cheat_sheet_path(sheet), class: "card h-100 text-decoration-none text-dark shadow-sm" do %>
-            <div class="card-body d-flex align-items-center justify-content-center">
+<div class="profile container py-5">
+
+  <%= link_to root_path, class: "profile-back" do %>
+    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Tous les thèmes
+  <% end %>
+
+  <h1 class="profile-title">Ton <span>profil</span></h1>
+
+  <div class="profile-hello">
+    <%= image_tag "logo_robot.svg", class: "profile-robot", alt: "" %>
+    <div class="profile-bubble">
+      <strong>Coding Buddy</strong>
+      <% if sheets.any? %>
+        Salut <%= name %> ! Tu as <%= sheets.size %> fiche<%= "s" if sheets.size > 1 %> prête<%= "s" if sheets.size > 1 %> à réviser. On continue ?
+      <% else %>
+        Salut <%= name %> ! Fais ton premier quiz, et je te prépare ta première fiche.
+      <% end %>
+    </div>
+  </div>
+
+  <div class="profile-stats">
+    <div class="profile-stat">
+      <small>Quiz terminés</small>
+      <span><%= finished.count %></span>
+    </div>
+    <div class="profile-stat">
+      <small>Score moyen</small>
+      <span><%= average ? "#{average.to_f.round(1)} / 5" : "–" %></span>
+    </div>
+    <div class="profile-stat">
+      <small>Cheat sheets</small>
+      <span><%= sheets.size %></span>
+    </div>
+  </div>
+
+  <h2 class="profile-section">Tes cheat sheets</h2>
+
+  <% if sheets.any? %>
+    <div class="row row-cols-1 row-cols-md-2 g-3">
+      <% sheets.each do |sheet| %>
+        <div class="col">
+          <%= link_to cheat_sheet_path(sheet), class: "profile-card" do %>
+            <span class="profile-card-icon">
+              <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
+            </span>
+            <span class="profile-card-title">
               <%= sheet.chat.title.presence || "Cheat sheet ##{sheet.id}" %>
-            </div>
+            </span>
+            <span class="profile-card-date">
+              Créée le <%= sheet.created_at.strftime("%d/%m/%Y") %>
+            </span>
+            <span class="profile-card-cta">Ouvrir la fiche →</span>
           <% end %>
         </div>
       <% end %>
     </div>
+
+    <%= link_to "Lancer un nouveau quiz →", root_path, class: "profile-button" %>
+  <% else %>
+    <div class="profile-empty">
+      <span class="profile-card-icon">
+        <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+      </span>
+      <strong>Ta première fiche t'attend</strong>
+      <p>Fais un quiz, discute avec l'IA, puis génère ta cheat sheet pour ne rien oublier.</p>
+      <%= link_to "Lancer un quiz", root_path, class: "profile-button profile-button-inline" %>
+    </div>
   <% end %>
 
-  <%= link_to "Retour", root_path, class: "btn btn-primary btn-lg" %>
 </div>
+
+<style>
+  .profile { max-width: 900px; }
+
+  .profile-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 14px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #2755C9;
+    text-decoration: none;
+  }
+
+  .profile-title { font-weight: 700; margin-bottom: 16px; }
+  .profile-title span { color: #2755C9; }
+
+  .profile-hello {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+  }
+
+  .profile-robot { height: 52px; width: auto; flex-shrink: 0; }
+  .profile-robot:hover { animation: profile-wiggle 0.5s ease; }
+
+  .profile-bubble {
+    padding: 10px 16px;
+    background: #f3f3f3;
+    border-radius: 14px;
+    line-height: 1.5;
+  }
+  .profile-bubble strong {
+    display: block;
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+
+  .profile-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .profile-stat {
+    padding: 14px 18px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+  }
+  .profile-stat small { display: block; color: #6b7280; margin-bottom: 4px; }
+  .profile-stat span { font-size: 1.8rem; font-weight: 700; color: #2755C9; line-height: 1.1; }
+
+  .profile-section { font-size: 1.1rem; font-weight: 700; margin: 28px 0 12px; }
+
+  .profile-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 160px;
+    padding: 18px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    color: inherit;
+    text-decoration: none;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  .profile-card:hover { transform: translateY(-3px); border-color: #2755C9; }
+
+  .profile-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    background: #e8eefc;
+    color: #2755C9;
+    border-radius: 11px;
+  }
+  .profile-card-title { margin-top: 6px; font-weight: 700; font-size: 1.05rem; }
+  .profile-card-date { font-size: 0.85rem; color: #6b7280; }
+  .profile-card-cta { margin-top: auto; font-weight: 600; font-size: 0.9rem; color: #2755C9; }
+
+  .profile-button {
+    display: block;
+    margin-top:
