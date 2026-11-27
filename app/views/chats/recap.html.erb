@@ -1,152 +1,144 @@
-<div class="container py-5">
+<% answers = @chat.quiz_answers.includes(:question).order(:created_at) %>
 
-  <div class="text-center mb-4">
-    <h1 class="h2">Your recap</h1>
+<div class="recap container py-5">
 
-    <p class="lead mb-0">
-      You scored <strong><%= @score %></strong>
-      out of <strong><%= @total %></strong>.
+  <!-- Score -->
+  <header class="recap-card text-center px-4 py-4 mb-4">
+    <h1 class="recap-title mb-2">Ton <span>récap</span></h1>
+    <strong class="recap-score d-block"><%= @score %> / <%= @total %></strong>
+    <p class="recap-muted mb-3">
+      <%= @score %> <%= @score > 1 ? "bonnes réponses" : "bonne réponse" %> sur <%= @total %>
     </p>
-  </div>
 
-  <!-- Strengths -->
-  <div class="card shadow-sm mb-4">
-    <div class="card-body">
-
-      <h2 class="h5 text-success">Your strengths</h2>
-
-      <% if @strengths.any? %>
-        <ul>
-          <% @strengths.each do |topic| %>
-            <li><%= topic %></li>
-          <% end %>
-        </ul>
-      <% else %>
-        <p>Keep practicing!</p>
+    <ol class="recap-steps list-unstyled d-flex gap-2 mx-auto mb-0">
+      <% answers.each_with_index do |answer, index| %>
+        <li class="recap-step <%= answer.correct? ? "recap-right" : "recap-wrong" %>"
+            aria-label="Question <%= index + 1 %> : <%= answer.correct? ? "correcte" : "incorrecte" %>">
+          <span><%= index + 1 %></span>
+          <i class="fa-solid <%= answer.correct? ? "fa-check" : "fa-xmark" %>" aria-hidden="true"></i>
+        </li>
       <% end %>
+    </ol>
+  </header>
 
-    </div>
-  </div>
+  <div class="row row-cols-1 row-cols-md-2 g-4 mb-4">
 
-  <!-- Weaknesses -->
-  <div class="card shadow-sm mb-4">
-    <div class="card-body">
+    <!-- Points forts -->
+    <div class="col">
+      <section class="recap-card h-100 p-4">
+        <h2 class="recap-subtitle recap-text-right mb-3">Tes points forts</h2>
 
-      <h2 class="h5 text-danger">Areas for improvement</h2>
-
-      <% if @weaknesses.any? %>
-        <ul>
-          <% @weaknesses.each do |topic| %>
-            <li><%= topic %></li>
-          <% end %>
-        </ul>
-      <% else %>
-        <p>Congratulations! No mistakes.</p>
-      <% end %>
-
-    </div>
-  </div>
-
-  <!-- Questions and answers -->
-  <div class="card shadow-sm mb-4">
-    <div class="card-body">
-
-      <h2 class="h5 card-title mb-3">
-        Questions and answers
-      </h2>
-
-      <ul class="list-group list-group-flush">
-
-        <% @chat.quiz_answers.includes(:question).each do |answer| %>
-
-          <li class="list-group-item px-0">
-
-            <div class="d-flex justify-content-between align-items-start gap-3">
-
-              <div>
-                <p class="fw-semibold mb-1">
-                  <%= answer.question.content %>
-                </p>
-
-                <p class="text-muted small mb-0">
-                  Your answer: <%= answer.content %>
-                </p>
-
-                <% unless answer.correct? %>
-
-                  <p class="text-success small mb-1">
-                    Correct answer:
-                    <%= answer.question.choices[answer.question.correct_option] %>
-                  </p>
-
-                  <p class="small mb-0">
-                    <%= answer.feedback %>
-                  </p>
-
-                <% end %>
-
-              </div>
-
-              <span class="badge <%= answer.correct? ? 'bg-success' : 'bg-danger' %> flex-shrink-0">
-
-                <%= answer.correct? ? "Correct" : "Incorrect" %>
-
-              </span>
-
-            </div>
-
-          </li>
-
+        <% if @strengths.any? %>
+          <ul class="list-unstyled mb-0">
+            <% @strengths.each do |topic| %>
+              <li class="recap-skill">
+                <span class="recap-skill-icon recap-right">
+                  <i class="fa-solid fa-check" aria-hidden="true"></i>
+                </span>
+                <%= topic %>
+              </li>
+            <% end %>
+          </ul>
+        <% else %>
+          <p class="mb-0">Continue à t'entraîner !</p>
         <% end %>
+      </section>
+    </div>
 
-      </ul>
+    <!-- Points à améliorer -->
+    <div class="col">
+      <section class="recap-card h-100 p-4">
+        <h2 class="recap-subtitle recap-text-wrong mb-3">À améliorer</h2>
 
+        <% if @weaknesses.any? %>
+          <ul class="list-unstyled mb-0">
+            <% @weaknesses.each do |topic| %>
+              <li class="recap-skill">
+                <span class="recap-skill-icon recap-wrong">
+                  <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+                </span>
+                <%= topic %>
+              </li>
+            <% end %>
+          </ul>
+        <% else %>
+          <p class="mb-0">Bravo ! Aucune erreur.</p>
+        <% end %>
+      </section>
     </div>
   </div>
 
-  <!-- Revision session -->
-  <div class="card shadow-sm mb-4">
-    <div class="card-body">
+  <!-- Questions et réponses -->
+  <section class="mb-4">
+    <h2 class="recap-section-title mb-3">Questions et réponses</h2>
 
-      <h2 class="h5">Your revision session</h2>
+    <% answers.each_with_index do |answer, index| %>
+      <article class="recap-card p-3 mb-3">
+        <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
+          <span class="recap-muted recap-number">Question <%= index + 1 %></span>
+          <span class="recap-badge <%= answer.correct? ? "recap-right" : "recap-wrong" %>">
+            <%= answer.correct? ? "Correct" : "Incorrect" %>
+          </span>
+        </div>
 
-      <p class="mb-0">
-        Exchanges with Coding Buddy:
-        <%= @chat.exchanges_count %> / <%= Chat::MAX_EXCHANGES %>
-      </p>
+        <h3 class="recap-question"><%= answer.question.content %></h3>
 
-    </div>
-  </div>
+        <div class="row g-2">
+          <div class="col-12 <%= "col-sm-6" unless answer.correct? %>">
+            <div class="recap-answer <%= answer.correct? ? "recap-right" : "recap-wrong" %>">
+              <i class="fa-solid <%= answer.correct? ? "fa-check" : "fa-xmark" %>" aria-hidden="true"></i>
+              <span>Ta réponse : <strong><%= answer.content %></strong></span>
+            </div>
+          </div>
+
+          <% unless answer.correct? %>
+            <div class="col-12 col-sm-6">
+              <div class="recap-answer recap-right">
+                <i class="fa-solid fa-check" aria-hidden="true"></i>
+                <span>Bonne réponse : <strong><%= answer.question.choices[answer.question.correct_option] %></strong></span>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <% unless answer.correct? %>
+          <p class="recap-feedback mt-3 mb-0"><%= answer.feedback %></p>
+        <% end %>
+      </article>
+    <% end %>
+  </section>
+
+  <!-- Session de révision -->
+  <section class="recap-card d-flex flex-wrap justify-content-between align-items-center gap-2 p-4 mb-4">
+    <h2 class="recap-subtitle mb-0">Ta session de révision</h2>
+    <span class="recap-muted">
+      Échanges avec Coding Buddy :
+      <strong class="text-body"><%= @chat.exchanges_count %> / <%= Chat::MAX_EXCHANGES %></strong>
+    </span>
+  </section>
 
   <!-- Actions -->
-  <div class="text-center">
-
-  <% if @chat.cheat_sheets.exists? %>
-
-    <%= link_to "Voir ma fiche de révision",
-                cheat_sheet_path(@chat.cheat_sheets.first),
-                class: "btn btn-primary btn-lg" %>
-
-  <% else %>
-
-    <%= button_to "Générer ma fiche de révision",
-                  chat_cheat_sheets_path(@chat),
-                  method: :post,
-                  class: "btn btn-primary btn-lg",
-                  data: { turbo_submits_with: "Generating..." } %>
-
-  <% end %>
-
-    <%= link_to "Start a new quiz",
-                root_path,
-                class: "btn btn-outline-secondary btn-lg" %>
-
-    <% unless user_signed_in? %>
-      <p class="small text-muted mt-2 mb-0">
-        You'll be asked to sign up or log in first.
-      </p>
+  <div class="d-flex flex-wrap justify-content-center gap-3">
+    <% if @chat.cheat_sheets.exists? %>
+      <%= link_to "Voir ma fiche de révision",
+                  cheat_sheet_path(@chat.cheat_sheets.first),
+                  class: "btn btn-primary btn-lg recap-primary" %>
+    <% else %>
+      <%= button_to "Générer ma fiche de révision",
+                    chat_cheat_sheets_path(@chat),
+                    method: :post,
+                    class: "btn btn-primary btn-lg recap-primary",
+                    data: { turbo_submits_with: "Génération en cours..." } %>
     <% end %>
 
+    <%= link_to "Lancer un nouveau quiz",
+                root_path,
+                class: "btn btn-outline-primary btn-lg recap-secondary" %>
   </div>
 
+  <% unless user_signed_in? %>
+    <p class="recap-muted small text-center mt-2 mb-0">
+      Tu devras d'abord t'inscrire ou te connecter.
+    </p>
+  <% end %>
 </div>
