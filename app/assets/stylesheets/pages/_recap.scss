@@ -1,0 +1,173 @@
+$recap-blue: #0b57d0;
+$recap-blue-dark: #08419e;
+$recap-blue-light: #e8f0ff;
+$recap-text: #14161c;
+$recap-muted: #555b66;
+$recap-border: #e2e5ea;
+$recap-green: #0f5132;
+$recap-green-light: #e6f6ec;
+$recap-red: #842029;
+$recap-red-light: #fdecea;
+
+.recap {
+  max-width: 880px;
+  color: $recap-text;
+}
+
+.recap-card {
+  background: #fff;
+  border: 1px solid $recap-border;
+  border-radius: 1rem;
+}
+
+.recap-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+
+  span {
+    color: $recap-blue;
+  }
+}
+
+.recap-score {
+  font-family: $headers-font;
+  font-size: 3.5rem;
+  line-height: 1.1;
+  color: $recap-blue;
+}
+
+.recap-muted {
+  color: $recap-muted;
+}
+
+.recap-right {
+  background: $recap-green-light;
+  color: $recap-green;
+}
+
+.recap-wrong {
+  background: $recap-red-light;
+  color: $recap-red;
+}
+
+.recap-text-right {
+  color: $recap-green;
+}
+
+.recap-text-wrong {
+  color: $recap-red;
+}
+
+.recap-steps {
+  max-width: 420px;
+}
+
+.recap-step {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.recap-subtitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.recap-skill {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+
+  & + & {
+    margin-top: 0.75rem;
+  }
+}
+
+.recap-skill-icon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  font-size: 0.75rem;
+}
+
+.recap-section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.recap-number,
+.recap-badge {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.recap-badge {
+  padding: 0.3rem 0.75rem;
+  border-radius: 2rem;
+}
+
+// Les questions contiennent souvent du code : on permet le retour à la ligne
+.recap-question {
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.recap-answer {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.6rem;
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
+.recap-feedback {
+  padding-top: 0.75rem;
+  border-top: 1px solid $recap-border;
+  font-size: 0.9rem;
+  color: $recap-muted;
+}
+
+.recap-primary,
+.recap-secondary {
+  border-width: 2px;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.recap-primary {
+  --bs-btn-bg: #{$recap-blue};
+  --bs-btn-border-color: #{$recap-blue};
+  --bs-btn-hover-bg: #{$recap-blue-dark};
+  --bs-btn-hover-border-color: #{$recap-blue-dark};
+  --bs-btn-active-bg: #{$recap-blue-dark};
+  --bs-btn-active-border-color: #{$recap-blue-dark};
+}
+
+.recap-secondary {
+  --bs-btn-bg: #fff;
+  --bs-btn-color: #{$recap-blue};
+  --bs-btn-border-color: #{$recap-blue};
+  --bs-btn-hover-bg: #{$recap-blue-light};
+  --bs-btn-hover-color: #{$recap-blue};
+  --bs-btn-hover-border-color: #{$recap-blue};
+  --bs-btn-active-bg: #{$recap-blue-light};
+  --bs-btn-active-color: #{$recap-blue};
+  --bs-btn-active-border-color: #{$recap-blue};
+}
