@@ -24,21 +24,6 @@
     </div>
   </div>
 
-  <div class="profile-stats">
-    <div class="profile-stat">
-      <small>Quiz terminés</small>
-      <span><%= finished.count %></span>
-    </div>
-    <div class="profile-stat">
-      <small>Score moyen</small>
-      <span><%= average ? "#{average.to_f.round(1)} / 5" : "–" %></span>
-    </div>
-    <div class="profile-stat">
-      <small>Cheat sheets</small>
-      <span><%= sheets.size %></span>
-    </div>
-  </div>
-
   <h2 class="profile-section">Tes cheat sheets</h2>
 
   <% if sheets.any? %>
