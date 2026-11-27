@@ -8,6 +8,10 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
+puts "Nettoyage de la base..."
+Category.destroy_all
+
+puts "Création des catégories..."
 [
   { name: "Ruby",  system_prompt: "Tu es un tuteur Ruby. Pose des questions de révision sur les bases du langage." },
   { name: "OOP",   system_prompt: "Tu es un tuteur en programmation orientée objet (classes, héritage, encapsulation)." },
@@ -15,7 +19,7 @@
   { name: "Front", system_prompt: "Tu es un tuteur front-end (HTML, CSS, JavaScript, Bootstrap)." },
   { name: "Rails", system_prompt: "Tu es un tuteur Ruby on Rails (MVC, routes, contrôleurs, vues, models)." }
 ].each do |attrs|
-  category = Category.find_or_initialize_by(name: attrs[:name])
-  category.update!(system_prompt: attrs[:system_prompt])
+  Category.create!(attrs)
 end
 
+puts "#{Category.count} catégories créées."
