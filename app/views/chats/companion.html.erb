@@ -1,115 +1,132 @@
-<div class="container py-4">
+<div class="companion container py-4">
 
-  <h1>Ton compagnon IA</h1>
+  <header class="d-flex flex-wrap justify-content-between align-items-center gap-4 mb-4">
+    <div>
+      <h1 class="companion-title mb-3">Ton compagnon <span>IA</span></h1>
+      <span class="companion-category">Catégorie : <%= @chat.category.name %></span>
+    </div>
 
-  <p>Catégorie : <%= @chat.category.name %></p>
+    <div class="companion-card d-flex align-items-center gap-4 px-4 py-3">
+      <div>
+        <h2 class="companion-score-title mb-1">Quiz terminé !</h2>
+        <span class="companion-muted">Ton score</span>
+      </div>
+      <strong class="companion-score"><%= @score %> / <%= @total %></strong>
+    </div>
+  </header>
 
-  <div class="card p-3 mb-4">
-    <h2>Quiz terminé !</h2>
-    <p>Ton score : <%= @score %> / <%= @total %></p>
-  </div>
+  <div class="row g-4">
 
-  <div class="card p-3 mb-4">
+    <section class="col-lg-12">
+      <% if @mistakes.any? %>
+        <h2 class="companion-section-title mb-3">Les notions à revoir</h2>
 
-    <% if @mistakes.any? %>
+        <div class="row g-3">
+          <% @mistakes.each do |mistake| %>
+            <div class="col-lg-6">
+              <article class="companion-card p-3 h-100">
+                <span class="companion-topic mb-2"><%= mistake[:topic] %></span>
+                <p class="fw-medium"><%= mistake[:question] %></p>
 
-      <h3>Les notions à revoir</h3>
-
-      <% @mistakes.each do |mistake| %>
-        <div class="mb-3">
-
-          <strong><%= mistake[:topic] %></strong>
-
-          <p><%= mistake[:question] %></p>
-
-          <p class="text-danger">
-            Ta réponse : <%= mistake[:user_answer] %>
-          </p>
-
-          <p class="text-success">
-            Bonne réponse : <%= mistake[:correct_answer] %>
-          </p>
-
+                <div class="row row-cols-1 row-cols-sm-2 g-2">
+                  <div class="col">
+                    <div class="companion-answer companion-answer-wrong">
+                      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                      <span>Ta réponse : <strong><%= mistake[:user_answer] %></strong></span>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="companion-answer companion-answer-right">
+                      <i class="fa-solid fa-check" aria-hidden="true"></i>
+                      <span>Bonne réponse : <strong><%= mistake[:correct_answer] %></strong></span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="companion-card p-4">
+          <p class="mb-0">Bravo ! Tu as répondu correctement à toutes les questions.</p>
         </div>
       <% end %>
+    </section>
 
-    <% else %>
+    <div class="col-lg-12">
+      <div class="companion-side">
 
-      <p>Bravo ! Tu as répondu correctement à toutes les questions.</p>
+        <section class="companion-card overflow-hidden">
+          <header class="chat-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <h2 class="chat-title d-flex align-items-center gap-2 mb-0">
+              <i class="fa-solid fa-robot" aria-hidden="true"></i>
+              Coding Buddy
+            </h2>
+            <span class="chat-remaining">Échanges restants : <%= @chat.remaining_exchanges %></span>
+          </header>
 
-    <% end %>
+          <%# column-reverse en CSS : la liste s'ouvre sur le dernier message %>
+          <div id="messages" class="chat-messages">
+            <div class="chat-messages-list">
+              <div class="chat-message">
+                <strong class="chat-author">Coding Buddy</strong>
+                <p class="mb-0">
+                  <% if @mistakes.any? %>
+                    Nous allons revoir ensemble les notions que tu n'as
+                    pas encore maîtrisées. Par laquelle veux-tu commencer ?
+                  <% else %>
+                    Excellent résultat ! Souhaites-tu approfondir une notion ?
+                  <% end %>
+                </p>
+              </div>
 
-  </div>
+              <% @messages.each do |message| %>
+                <div class="chat-message <%= "chat-message-user" if message.role == "user" %>">
+                  <strong class="chat-author">
+                    <%= message.role == "user" ? "Toi" : "Coding Buddy" %>
+                  </strong>
 
-  <div id="messages" class="mb-4">
+                  <% if message.role == "assistant" %>
+                    <div class="markdown-content">
+                      <%= sanitize render_markdown(message.content) %>
+                    </div>
+                  <% else %>
+                    <p class="chat-text mb-0"><%= message.content %></p>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          </div>
 
-    <div class="bg-light rounded p-3 mb-3">
-      <strong>Coding Buddy</strong>
+          <div class="chat-footer">
+            <% unless @chat.discussion_limit_reached? %>
+              <%= form_with model: @message,
+                            url: discuss_chat_messages_path(@chat),
+                            method: :post,
+                            data: { turbo: false } do |f| %>
 
-      <p>
-        <% if @mistakes.any? %>
-          Nous allons revoir ensemble les notions que tu n'as
-          pas encore maîtrisées. Par laquelle veux-tu commencer ?
-        <% else %>
-          Excellent résultat ! Souhaites-tu approfondir une notion ?
-        <% end %>
-      </p>
-    </div>
+                <%= f.label :content, "Ta question", class: "form-label fw-semibold" %>
+                <%= f.text_area :content,
+                                class: "form-control chat-input mb-3",
+                                placeholder: "Pose ta question...",
+                                required: true,
+                                rows: 3 %>
 
-    <% @messages.each do |message| %>
+                <div class="text-end">
+                  <%= f.submit "Envoyer", class: "btn btn-primary chat-submit" %>
+                </div>
+              <% end %>
+            <% else %>
+              <%# Pas de classe .alert, pour que le message reste dans la discussion %>
+              <p class="chat-closed mb-0">Tu as terminé ta session de discussion.</p>
+            <% end %>
+          </div>
+        </section>
 
-      <div class="rounded p-3 mb-3 <%= message.role == "user" ? "bg-primary text-white" : "bg-light" %>">
-
-        <strong>
-          <%= message.role == "user" ? "Toi" : "Coding Buddy" %>
-        </strong>
-
-        <% if message.role == "assistant" %>
-        <div class="markdown-content">
-            <%= sanitize render_markdown(message.content) %>
-        </div>
-        <% else %>
-        <p><%= message.content %></p>
-        <% end %>
+        <%= link_to "Passer au récapitulatif →",
+                    recap_chat_path(@chat),
+                    class: "btn btn-success companion-next w-100 mt-3" %>
       </div>
-
-    <% end %>
-
-  </div>
-
-        <p>
-        Échanges restants :
-        <%= @chat.remaining_exchanges %>
-        </p>
-
-        <% unless @chat.discussion_limit_reached? %>
-
-
-  <%= form_with model: @message,
-                url: discuss_chat_messages_path(@chat),
-                method: :post,
-                data: { turbo: false } do |f| %>
-
-    <%= f.text_area :content,
-                    class: "form-control mb-3",
-                    placeholder: "Pose ta question...",
-                    required: true,
-                    rows: 3 %>
-
-    <%= f.submit "Envoyer",
-                 class: "btn btn-primary w-100" %>
-
-  <% end %>
-
-    <% else %>
-
-    <div class="alert alert-info">
-        Tu as terminé ta session de discussion.
     </div>
-
-<% end %>
-
-<%= link_to "Passer au récapitulatif",
-            recap_chat_path(@chat),
-            class: "btn btn-success w-100 mt-3" %>
+  </div>
 </div>
