@@ -1,0 +1,162 @@
+$sheet-blue: #0b57d0;
+$sheet-blue-dark: #08419e;
+$sheet-blue-light: #e8f0ff;
+$sheet-text: #14161c;
+$sheet-muted: #555b66;
+$sheet-border: #e2e5ea;
+
+.cheatsheet {
+  max-width: 1144px;
+  color: $sheet-text;
+}
+
+.cheatsheet-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+
+  span {
+    color: $sheet-blue;
+  }
+}
+
+.cheatsheet-chip {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid $sheet-border;
+  border-radius: 2rem;
+  background: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.cheatsheet-chip-blue {
+  border-color: $sheet-blue-light;
+  background: $sheet-blue-light;
+  color: $sheet-blue;
+}
+
+.cheatsheet-date {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $sheet-muted;
+}
+
+.cheatsheet-card,
+.cheatsheet-actions {
+  background: #fff;
+  border: 1px solid $sheet-border;
+  border-radius: 1rem;
+}
+
+.cheatsheet-actions.sticky-lg-top {
+  top: 1.5rem;
+  z-index: 1;
+}
+
+// Mise en forme du Markdown généré : à placer sur son conteneur direct
+.cheatsheet-content {
+  padding: 2.5rem;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+
+  @media (max-width: 575.98px) {
+    padding: 1.25rem;
+  }
+
+  // Masque le titre répété au début de la fiche
+  > h1:first-child {
+    display: none;
+  }
+
+  > h1:first-child + h2,
+  > h2:first-child {
+    margin-top: 0;
+  }
+
+  h2 {
+    margin: 2rem 0 1rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $sheet-blue;
+  }
+
+  h3 {
+    margin: 1.5rem 0 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  hr {
+    margin: 2rem 0;
+    border: 0;
+    border-top: 1px solid $sheet-border;
+    opacity: 1;
+
+    + h2,
+    + h3 {
+      margin-top: 0;
+    }
+  }
+
+  li {
+    margin-bottom: 0.35rem;
+
+    &::marker {
+      color: $sheet-blue;
+      font-weight: 600;
+    }
+  }
+
+  code {
+    padding: 0.1rem 0.4rem;
+    border-radius: 0.375rem;
+    background: $sheet-blue-light;
+    color: $sheet-blue-dark;
+  }
+
+  pre {
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    border-radius: 0.75rem;
+    background: $sheet-text;
+    color: #f5f7fa;
+    line-height: 1.7;
+    overflow-wrap: normal;
+
+    code {
+      padding: 0;
+      background: transparent;
+      color: inherit;
+    }
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.cheatsheet-btn {
+  --bs-btn-color: #{$sheet-blue};
+  --bs-btn-bg: #fff;
+  --bs-btn-border-color: #{$sheet-blue};
+  --bs-btn-hover-color: #{$sheet-blue};
+  --bs-btn-hover-bg: #{$sheet-blue-light};
+  --bs-btn-hover-border-color: #{$sheet-blue};
+  --bs-btn-active-color: #{$sheet-blue};
+  --bs-btn-active-bg: #{$sheet-blue-light};
+  --bs-btn-active-border-color: #{$sheet-blue};
+  padding: 0.75rem 1rem;
+  border-width: 2px;
+  border-radius: 0.75rem;
+  font-weight: 600;
+}
+
+.cheatsheet-btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #{$sheet-blue};
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #{$sheet-blue-dark};
+  --bs-btn-hover-border-color: #{$sheet-blue-dark};
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #{$sheet-blue-dark};
+  --bs-btn-active-border-color: #{$sheet-blue-dark};
+}
