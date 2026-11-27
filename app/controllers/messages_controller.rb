@@ -118,8 +118,68 @@ class MessagesController < ApplicationController
       et non comme un manuel de cours.
     PROMPT
 
+# Identifiants des messages temporaires
+preview_id = "stream_#{SecureRandom.hex(8)}"
+user_preview_id = "#{preview_id}_user"
+assistant_preview_id = "#{preview_id}_assistant"
+content_id = "#{preview_id}_content"
+
+# Affichage immédiat du message utilisateur
+user_html = helpers.tag.div(
+  helpers.safe_join([
+    helpers.tag.strong("Toi", class: "chat-author"),
+    helpers.tag.p(content, class: "chat-text mb-0")
+  ]),
+  id: user_preview_id,
+  class: "chat-message chat-message-user"
+)
+
+Turbo::StreamsChannel.broadcast_append_to(
+  @chat,
+  :companion,
+  target: "companion_messages",
+  html: user_html
+)
+
+# Affichage du message temporaire de Coding Buddy
+assistant_html = helpers.tag.div(
+  helpers.safe_join([
+    helpers.tag.strong("Coding Buddy", class: "chat-author"),
+    helpers.tag.div(
+      "Coding Buddy réfléchit...",
+      id: content_id,
+      class: "markdown-content",
+      style: "white-space: pre-wrap;"
+    )
+  ]),
+  id: assistant_preview_id,
+  class: "chat-message"
+)
+
+    Turbo::StreamsChannel.broadcast_append_to(
+      @chat,
+      :companion,
+      target: "companion_messages",
+      html: assistant_html
+    )
+
+    # Streaming de la réponse IA
+    full_response = +""
+
     llm = RubyLLM.chat
-    response = llm.with_instructions(SYSTEM_PROMPT).ask(prompt)
+
+    response = llm.with_instructions(SYSTEM_PROMPT).ask(prompt) do |chunk|
+      next if chunk.content.nil? || chunk.content.empty?
+
+      full_response << chunk.content
+
+      Turbo::StreamsChannel.broadcast_update_to(
+        @chat,
+        :companion,
+        target: content_id,
+        html: ERB::Util.html_escape(full_response)
+      )
+    end
 
     if response.content.blank?
       return redirect_to companion_chat_path(@chat),
