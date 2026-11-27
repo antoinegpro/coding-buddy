@@ -28,14 +28,15 @@
 
   <% if sheets.any? %>
     <div class="row row-cols-1 row-cols-md-2 g-3">
-      <% sheets.each do |sheet| %>
+      <% sheets.each_with_index do |sheet, index| %>
         <div class="col">
           <%= link_to cheat_sheet_path(sheet), class: "profile-card" do %>
             <span class="profile-card-icon">
               <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
             </span>
             <span class="profile-card-title">
-              <%= sheet.chat.title.presence || "Cheat sheet ##{sheet.id}" %>
+              <%= sheet.chat.title.presence || "Cheat sheet" %>
+              <span class="profile-card-id">#<%= sheets.size - index %></span>
             </span>
             <span class="profile-card-date">
               Créée le <%= sheet.created_at.strftime("%d/%m/%Y") %>
