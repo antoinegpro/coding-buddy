@@ -2,11 +2,17 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="chat-form"
 export default class extends Controller {
-  static targets = ["button"]
-
   send(event) {
-    event.preventDefault() // pas de retour à la ligne
-    if (this.buttonTarget.disabled) return // évite un double envoi
-    this.element.requestSubmit(this.buttonTarget) // comme un clic sur "Envoyer"
+    // Entrée seule dans le textarea uniquement
+    if (event.target.tagName !== "TEXTAREA") return
+    // Maj+Entrée = retour à la ligne ; saisie IME (accents) en cours = on ne fait rien
+    if (event.shiftKey || event.isComposing) return
+
+    event.preventDefault()
+
+    const button = this.element.querySelector("[type='submit']")
+    if (button?.disabled) return
+
+    this.element.requestSubmit(button)
   }
 }
