@@ -129,29 +129,27 @@
               <%= form_with model: @message,
                             url: discuss_chat_messages_path(@chat),
                             method: :post,
-                            id: "companion_form" do |f| %>
+                            id: "companion_form",
+                            data: { controller: "chat-form" } do |f| %>
 
-                <%= f.label :content,
-                            "Ta question",
-                            class: "form-label fw-semibold" %>
+                <%= f.label :content, "Ta question", class: "form-label fw-semibold" %>
 
                 <%= f.text_area :content,
-                            id: "message_content",
-                            class: "form-control chat-input mb-3",
-                            placeholder: "Pose ta question...",
-                            required: true,
-                            rows: 3 %>
+                                id: "message_content",
+                                class: "form-control chat-input mb-3",
+                                placeholder: "Pose ta question...",
+                                required: true,
+                                rows: 3,
+                                data: { action: "keydown.enter->chat-form#send" } %>
 
                 <div class="text-end">
-
                   <%= f.submit "Envoyer",
-                               class: "btn btn-primary chat-submit",
-                               data: {
-                                 turbo_submits_with: "Coding Buddy réfléchit..."
-                               } %>
-
+                              class: "btn btn-primary chat-submit",
+                              data: {
+                                chat_form_target: "button",
+                                turbo_submits_with: "Coding Buddy réfléchit..."
+                              } %>
                 </div>
-
               <% end %>
 
             <% else %>
