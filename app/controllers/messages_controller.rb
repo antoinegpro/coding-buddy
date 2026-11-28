@@ -216,8 +216,8 @@ assistant_html = helpers.tag.div(
     end
 
     # Broadcast des deux nouveaux messages
-    broadcast_message(user_message)
-    broadcast_message(assistant_message)
+    broadcast_message(user_message, replaces: user_preview_id)
+    broadcast_message(assistant_message, replaces: assistant_preview_id)
 
     # Actualisation du compteur
     broadcast_remaining_exchanges
@@ -256,7 +256,7 @@ assistant_html = helpers.tag.div(
     params.require(:message).permit(:content)
   end
 
-  def broadcast_message(message)
+  def broadcast_message(message, replaces:)
     user_message = message.role == "user"
 
     author = helpers.tag.strong(
@@ -282,10 +282,10 @@ assistant_html = helpers.tag.div(
       class: user_message ? "chat-message chat-message-user" : "chat-message"
     )
 
-    Turbo::StreamsChannel.broadcast_append_to(
+    Turbo::StreamsChannel.broadcast_replace_to(
       @chat,
       :companion,
-      target: "companion_messages",
+      target: replaces,
       html: html
     )
   end
