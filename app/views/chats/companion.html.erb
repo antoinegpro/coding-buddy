@@ -130,7 +130,10 @@
                             url: discuss_chat_messages_path(@chat),
                             method: :post,
                             id: "companion_form",
-                            data: { controller: "chat-form" } do |f| %>
+                            data: {
+                              controller: "chat-form",
+                              action: "keydown.enter->chat-form#send"
+                            } do |f| %>
 
                 <%= f.label :content, "Ta question", class: "form-label fw-semibold" %>
 
@@ -139,16 +142,12 @@
                                 class: "form-control chat-input mb-3",
                                 placeholder: "Pose ta question...",
                                 required: true,
-                                rows: 3,
-                                data: { action: "keydown.enter->chat-form#send" } %>
+                                rows: 3 %>
 
                 <div class="text-end">
                   <%= f.submit "Envoyer",
                               class: "btn btn-primary chat-submit",
-                              data: {
-                                chat_form_target: "button",
-                                turbo_submits_with: "Coding Buddy réfléchit..."
-                              } %>
+                              data: { turbo_submits_with: "Coding Buddy réfléchit..." } %>
                 </div>
               <% end %>
 
